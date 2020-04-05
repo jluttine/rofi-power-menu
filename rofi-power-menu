@@ -15,11 +15,11 @@ logout="Log out"
 suspend="Suspend"
 hibernate="Hibernate"
 reboot="Reboot"
-shutdown="Shut down"
+poweroff="Power off"
 
 # Ask for confirmation for actions that are irreversible
 confirmReboot="Yes, reboot"
-confirmShutdown="Yes, shut down"
+confirmPoweroff="Yes, power off"
 confirmLogout="Yes, log out"
 cancel="Cancel"
 
@@ -31,7 +31,7 @@ then
     echo $suspend
     echo $hibernate
     echo $reboot
-    echo $shutdown
+    echo $poweroff
 else
     selection=$@
     case $selection in
@@ -62,12 +62,12 @@ else
         $confirmReboot)
             systemctl reboot &> /dev/null
             ;;
-        $shutdown)
+        $poweroff)
             echo $cancel
-            echo $confirmShutdown
+            echo $confirmPoweroff
             ;;
-        $confirmShutdown)
-            systemctl shutdown -P now &> /dev/null
+        $confirmPoweroff)
+            systemctl poweroff &> /dev/null
             ;;
         $cancel)
             exit 0
