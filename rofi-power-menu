@@ -9,7 +9,7 @@
 #
 # See README.md for more information.
 
-lockscreen="Lock the screen"
+lockscreen="Lock screen"
 switchuser="Switch user"
 logout="Log out"
 suspend="Suspend"
