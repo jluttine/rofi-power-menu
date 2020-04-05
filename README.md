@@ -11,7 +11,7 @@ This makes it possible to combine the script with the full power of how rofi can
 use modi. For instance, you can have multiple modi available (`-modi`) or
 combine multiple modi in one mode (`-combi-modi`), pass your own themes
 (`-theme`) and configurations as CLI flags (e.g., `-fullscreen`,
-`sidebar-mode`).
+`sidebar-mode`, `-matching fuzzy`).
 
 
 ## Install
