@@ -1,0 +1,80 @@
+#!/bin/sh
+
+# This script defines just a mode for rofi instead of being a self-contained
+# executable that launches rofi by itself. This makes it more flexible than
+# running rofi inside this script as now the user can call rofi as one pleases.
+# For instance:
+#
+#   rofi -show powermenu -modi powermenu:./rofi-power-menu
+#
+# See README.md for more information.
+
+lockscreen="Lock the screen"
+switchuser="Switch user"
+logout="Log out"
+suspend="Suspend"
+hibernate="Hibernate"
+reboot="Reboot"
+shutdown="Shut down"
+
+# Ask for confirmation for actions that are irreversible
+confirmReboot="Yes, reboot"
+confirmShutdown="Yes, shut down"
+confirmLogout="Yes, log out"
+cancel="Cancel"
+
+if [ -z "$1" ]
+then
+    echo $lockscreen
+    #echo $switchuser
+    echo $logout
+    echo $suspend
+    echo $hibernate
+    echo $reboot
+    echo $shutdown
+else
+    selection=$@
+    case $selection in
+        $lockscreen)
+            loginctl lock-session $XDG_SESSION_ID &> /dev/null
+            ;;
+        $switchuser)
+            # TODO: I suppose this is window manager dependent?
+            >&2 echo "User switching not implemented yet"
+            ;;
+        $logout)
+            echo $cancel
+            echo $confirmLogout
+            ;;
+        $confirmLogout)
+            loginctl terminate-session $XDG_SESSION_ID &> /dev/null
+            ;;
+        $suspend)
+            systemctl suspend &> /dev/null
+            ;;
+        $hibernate)
+            systemctl hibernate &> /dev/null
+            ;;
+        $reboot)
+            echo $cancel
+            echo $confirmReboot
+            ;;
+        $confirmReboot)
+            systemctl reboot &> /dev/null
+            ;;
+        $shutdown)
+            echo $cancel
+            echo $confirmShutdown
+            ;;
+        $confirmShutdown)
+            systemctl shutdown -P now &> /dev/null
+            ;;
+        $cancel)
+            exit 0
+            ;;
+        *)
+            >&2 echo "Invalid choice."
+            exit 1
+            ;;
+    esac
+fi
