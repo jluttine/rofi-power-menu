@@ -73,6 +73,8 @@ while true; do
             echo "                     (if confirmation is set to be requested). It is strongly"
             echo "                     recommended to combine this option with --confirm=CHOICE"
             echo "                     if the choice wouldn't require confirmation by default."
+            echo "                     Available choices are lockscreen, logout, suspend,"
+            echo "                     hibernate, reboot and shutdown."
             echo "  -h,--help          Show this help text."
             exit 0
             ;;

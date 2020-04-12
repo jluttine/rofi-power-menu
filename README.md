@@ -72,6 +72,8 @@ Available options:
                      (if confirmation is set to be requested). It is strongly
                      recommended to combine this option with --confirm=CHOICE
                      if the choice wouldn't require confirmation by default.
+                     Available choices are lockscreen, logout, suspend,
+                     hibernate, reboot and shutdown.
   -h,--help          Show this help text.
 ```
 
