@@ -44,7 +44,7 @@ run it as follows:
 rofi -show power-menu -modi power-menu:./rofi-power-menu
 ```
 
-### `--choices=...`
+### `--choices=CHOICE1/CHOICE2/...`
 
 By default, the menu shows all available choices in a particular order. You can
 control the shown choices and their order by using `--choices` and listing the
@@ -57,20 +57,28 @@ desired choices with `/` as the separator. Available choices are:
 - `reboot`: Reboot (confirmation can be asked)
 - `shutdown`: Shutdown (confirmation can be asked)
 
-For instance, to show only shut down and reboot choices:
+For instance, to show only `shutdown` and `reboot` choices:
 
 ```
 rofi -show power-menu -modi "power-menu:./rofi-power-menu --choices=shutdown/reboot"
 ```
 
-### `--confirm`
-
-If you want the irreversible actions logout, reboot and shutdown to ask for
-confirmation, pass `--confirm` flag. For instance, show the default choices but
-require confirmations:
+Or if you want a typical session menu:
 
 ```
-rofi -show power-menu -modi "power-menu:./rofi-power-menu --confirm"
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --choices=logout/lockscreen"
+```
+
+### `--confirm=CHOICE1/CHOICE2/...`
+
+By default, confirmation is asked for irreversible actions `logout`, `reboot`
+and `shutdown`. You can choose for which actions you want confirmation (if any)
+by listing them with `--confirm` option. For instance, confirmation can be asked
+only for `reboot` and `shutdown`:
+
+
+```
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --confirm=reboot/shutdown"
 ```
 
 ### `--dry-run`

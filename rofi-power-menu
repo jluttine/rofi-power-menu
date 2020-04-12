@@ -17,19 +17,29 @@ hibernate="Hibernate"
 reboot="Reboot"
 shutdown="Shut down"
 
-# Ask for confirmation for actions that are irreversible
-confirmReboot="Yes, reboot"
-confirmShutdown="Yes, shut down"
-confirmLogout="Yes, log out"
+lockscreenConfirmation="Yes, lock screen"
+switchuserConfirmation="Yes, switch user"
+logoutConfirmation="Yes, log out"
+suspendConfirmation="Yes, suspend"
+hibernateConfirmation="Yes, hibernate"
+rebootConfirmation="Yes, reboot"
+shutdownConfirmation="Yes, shut down"
 cancel="No, cancel"
 
 # Default options
 show="$shutdown\n$reboot\n$suspend\n$hibernate\n$logout\n$lockscreen\n"
-confirm=false
 dryrun=false
+# By default, ask for confirmation for actions that are irreversible
+confirmLockscreen=false
+confirmSwitchuser=false
+confirmLogout=true
+confirmSuspend=false
+confirmHibernate=false
+confirmReboot=true
+confirmShutdown=true
 
 # Parse command-line options
-parsed=$(getopt --options=h --longoptions=help,dry-run,confirm,choices: --name "$0" -- "$@")
+parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices: --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -41,7 +51,7 @@ while true; do
         "-h"|"--help")
             echo "rofi-power-menu - a power menu mode for Rofi"
             echo
-            echo "Usage: rofi-power-menu [--choices CHOICES] [--confirm] [--dry-run]"
+            echo "Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES] [--dry-run]"
             echo
             echo "Use with Rofi in script mode. For instance, to show shutdown and reboot choices:"
             echo
@@ -52,7 +62,10 @@ while true; do
             echo "  --choices CHOICES  Show only the selected choices in given order. Use / as the separator."
             echo "                     Available choices are lockscreen, logout, suspend, hibernate, reboot"
             echo "                     and shutdown. By default, all choices are shown."
-            echo "  --confirm          Require confirmation."
+            echo "  --confirm CHOICES  Require confirmation for the gives choices only. Use / as the separator."
+            echo "                     Available choices are lockscreen, logout, suspend, hibernate, reboot"
+            echo "                     and shutdown. By default, only irreversible actions logout, reboot and"
+            echo "                     shutdown require confirmation."
             echo "  -h,--help          Show this help text."
             exit 0
             ;;
@@ -62,8 +75,35 @@ while true; do
             continue
             ;;
         "--confirm")
-            confirm=true
-            shift 1
+            confirmLockscreen=false
+            confirmSwitchuser=false
+            confirmLogout=false
+            confirmSuspend=false
+            confirmHibernate=false
+            confirmReboot=false
+            confirmShutdown=false
+            IFS='/' read -ra choices <<< "$2"
+            for choice in "${choices[@]}"; do
+                case $choice in
+                    "lockscreen")
+                        confirLockscreen=true ;;
+                    "logout")
+                        confirmLogout=true ;;
+                    "suspend")
+                        confirmSuspend=true ;;
+                    "hibernate")
+                        confirmHibernate=true ;;
+                    "reboot")
+                        confirmReboot=true ;;
+                    "shutdown")
+                        confirmShutdown=true ;;
+                    *)
+                        echo "Invalid choice in --confirm: $choice" >&2
+                        exit 1
+                        ;;
+                esac
+            done
+            shift 2
             continue
             ;;
         "--choices")
@@ -84,7 +124,7 @@ while true; do
                     "shutdown")
                         show="$show$shutdown\n" ;;
                     *)
-                        echo "Invalid choice: $choice" >&2
+                        echo "Invalid choice in --choices: $choice" >&2
                         exit 1
                         ;;
                 esac
@@ -110,6 +150,14 @@ else
     selection=$@
     case $selection in
         $lockscreen)
+            if [ $confirmLockscreen = true ]
+            then
+                echo $lockscreenConfirmation
+                echo $cancel
+                exit 0
+            fi
+            ;&
+        $lockscreenConfirmation)
             if [ $dryrun = true ]
             then
                 echo "Locking screen.." >&2
@@ -122,15 +170,14 @@ else
             echo "User switching not implemented yet" >&2
             ;;
         $logout)
-            if [ $confirm = true ]
+            if [ $confirmLogout = true ]
             then
-                confirmed=false
-                echo $confirmLogout
+                echo $logoutConfirmation
                 echo $cancel
                 exit 0
             fi
-            ;&  # resume to the next case
-        $confirmLogout)
+            ;&
+        $logoutConfirmation)
             if [ $dryrun = true ]
             then
                 echo "Logging out.." >&2
@@ -139,6 +186,14 @@ else
             fi
             ;;
         $suspend)
+            if [ $confirmSuspend = true ]
+            then
+                echo $suspendConfirmation
+                echo $cancel
+                exit 0
+            fi
+            ;&
+        $suspendConfirmation)
             if [ $dryrun = true ]
             then
                 echo "Suspending.." >&2
@@ -146,6 +201,14 @@ else
                 systemctl suspend &> /dev/null
             fi
             ;;
+        $hibernate)
+            if [ $confirmHibernate = true ]
+            then
+                echo $hibernateConfirmation
+                echo $cancel
+                exit 0
+            fi
+            ;&
         $hibernateConfirmation)
             if [ $dryrun = true ]
             then
@@ -155,15 +218,14 @@ else
             fi
             ;;
         $reboot)
-            if [ $confirm = true ]
+            if [ $confirmReboot = true ]
             then
-                confirmed=false
-                echo $confirmReboot
+                echo $rebootConfirmation
                 echo $cancel
                 exit 0
             fi
             ;&  # resume to the next case
-        $confirmReboot)
+        $rebootConfirmation)
             if [ $dryrun = true ]
             then
                 echo "Rebooting.." >&2
@@ -172,15 +234,14 @@ else
             fi
             ;;
         $shutdown)
-            if [ $confirm = true ]
+            if [ $confirmShutdown = true ]
             then
-                confirmed=false
-                echo $confirmShutdown
+                echo $shutdownConfirmation
                 echo $cancel
                 exit 0
             fi
-            ;&  # resume to the next case
-        $confirmShutdown)
+            ;&
+        $shutdownConfirmation)
             if [ $dryrun = true ]
             then
                 echo "Shutting down.." >&2
