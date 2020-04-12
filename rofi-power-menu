@@ -26,9 +26,10 @@ cancel="No, cancel"
 # Default options
 show="$shutdown\n$reboot\n$suspend\n$hibernate\n$logout\n$lockscreen\n"
 confirm=false
+dryrun=false
 
 # Parse command-line options
-parsed=$(getopt --options="" --longoptions=confirm,options: --name "$0" -- "$@")
+parsed=$(getopt --options="" --longoptions=dry-run,confirm,options: --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -37,6 +38,11 @@ eval set -- "$parsed"
 unset parsed
 while true; do
     case "$1" in
+        "--dry-run")
+            dryrun=true
+            shift 1
+            continue
+            ;;
         "--confirm")
             confirm=true
             shift 1
@@ -86,11 +92,16 @@ else
     selection=$@
     case $selection in
         $lockscreen)
-            loginctl lock-session $XDG_SESSION_ID &> /dev/null
+            if [ $dryrun = true ]
+            then
+                echo "Locking screen.." >&2
+            else
+                loginctl lock-session $XDG_SESSION_ID &> /dev/null
+            fi
             ;;
         $switchuser)
             # TODO: I suppose this is window manager dependent?
-            >&2 echo "User switching not implemented yet"
+            echo "User switching not implemented yet" >&2
             ;;
         $logout)
             if [ $confirm = true ]
@@ -102,13 +113,28 @@ else
             fi
             ;&  # resume to the next case
         $confirmLogout)
-            loginctl terminate-session $XDG_SESSION_ID &> /dev/null
+            if [ $dryrun = true ]
+            then
+                echo "Logging out.." >&2
+            else
+                loginctl terminate-session $XDG_SESSION_ID &> /dev/null
+            fi
             ;;
         $suspend)
-            systemctl suspend &> /dev/null
+            if [ $dryrun = true ]
+            then
+                echo "Suspending.." >&2
+            else
+                systemctl suspend &> /dev/null
+            fi
             ;;
-        $hibernate)
-            systemctl hibernate &> /dev/null
+        $hibernateConfirmation)
+            if [ $dryrun = true ]
+            then
+                echo "Hibernating.." >&2
+            else
+                systemctl hibernate &> /dev/null
+            fi
             ;;
         $reboot)
             if [ $confirm = true ]
@@ -120,7 +146,12 @@ else
             fi
             ;&  # resume to the next case
         $confirmReboot)
-            systemctl reboot &> /dev/null
+            if [ $dryrun = true ]
+            then
+                echo "Rebooting.." >&2
+            else
+                systemctl reboot &> /dev/null
+            fi
             ;;
         $shutdown)
             if [ $confirm = true ]
@@ -132,7 +163,12 @@ else
             fi
             ;&  # resume to the next case
         $confirmShutdown)
-            systemctl poweroff &> /dev/null
+            if [ $dryrun = true ]
+            then
+                echo "Shutting down.." >&2
+            else
+                systemctl poweroff &> /dev/null
+            fi
             ;;
         $cancel)
             exit 0

@@ -71,6 +71,12 @@ require confirmations:
 rofi -show power-menu -modi "power-menu:./rofi-power-menu --options=shutdown/reboot""
 ```
 
+### `--dry-run`
+
+For debugging and development purposes, you can pass `--dry-run` flag. Then, the
+selected action isn't performed but only printed to stderr.
+
+
 ## Copyright
 
 Copyright (c) 2020 Jaakko Luttinen
