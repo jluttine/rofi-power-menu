@@ -29,7 +29,7 @@ confirm=false
 dryrun=false
 
 # Parse command-line options
-parsed=$(getopt --options="" --longoptions=dry-run,confirm,options: --name "$0" -- "$@")
+parsed=$(getopt --options=h --longoptions=help,dry-run,confirm,options: --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -38,6 +38,24 @@ eval set -- "$parsed"
 unset parsed
 while true; do
     case "$1" in
+        "-h"|"--help")
+            echo "rofi-power-menu - a power menu mode for Rofi"
+            echo
+            echo "Usage: rofi-power-menu [--options CMDS] [--confirm] [--dry-run]"
+            echo
+            echo "Use with Rofi in script mode. For instance:"
+            echo
+            echo "rofi -show powermenu -modi \"powermenu:rofi-power-menu --options=shutdown/reboot\""
+            echo
+            echo "Available options:"
+            echo "  --dry-run  Don't perform the selected action but print it to stderr."
+            echo "  --options  Show only the selected choices in given order. Use / as the separator."
+            echo "             Available choices are lockscreen, logout, suspend, hibernate, reboot"
+            echo "             and shutdown."
+            echo "  --confirm  Require confirmation."
+            echo "  -h,--help  Show this help text."
+            exit 0
+            ;;
         "--dry-run")
             dryrun=true
             shift 1
