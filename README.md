@@ -13,7 +13,7 @@ This makes it possible to combine the script with the full power of how rofi can
 use modi. For instance, you can have multiple modi available (`-modi`) or
 combine multiple modi in one mode (`-combi-modi`), pass your own themes
 (`-theme`) and configurations as CLI flags (e.g., `-fullscreen`,
-`sidebar-mode`, `-matching fuzzy`).
+`-sidebar-mode`, `-matching fuzzy`, `-location`).
 
 
 ## Install
@@ -97,7 +97,7 @@ rofi -show power-menu -modi "power-menu:./rofi-power-menu --choices=shutdown/reb
 Or if you want a typical session menu:
 
 ```
-rofi -show power-menu -modi "power-menu:./rofi-power-menu --choices=logout/lockscreen"
+rofi -show session-menu -modi "session-menu:./rofi-power-menu --choices=logout/lockscreen"
 ```
 
 ### `--confirm=CHOICE1/CHOICE2/...`
