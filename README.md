@@ -112,12 +112,18 @@ only for `reboot` and `shutdown`:
 rofi -show power-menu -modi "power-menu:./rofi-power-menu --confirm=reboot/shutdown"
 ```
 
+If you don't want confirmations for any actions, just give an empty string:
+
+```
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --confirm=''"
+```
+
 
 ### `--choose=CHOICE`
 
-To just open a confirmation dialog for some fixed choice, you can use
+To open just a confirmation dialog for some fixed choice, you can use
 `--choose=CHOICE`, where `CHOICE` can again be one of the choices listed above.
-You need to also ask for confirmation for that choice if that isn't done by
+You should also require confirmation for that choice if that isn't done by
 default. For instance, a simple logout confirmation:
 
 ```
@@ -132,9 +138,9 @@ rofi -show hibernate -modi "hibernate:./rofi-power-menu --choose=hibernate --con
 ```
 
 If confirmation isn't asked, the action is performed immediately. Although,
-that's probably not useful, it's possible. However, note that Rofi will still
-pop up a menu with no options available. It would be nice if Rofi would just
-close if it wasn't given any choices.
+that's probably not useful, it is possible. However, note that Rofi will still
+pop up a menu with no options available. It would be nice if Rofi would not
+appear at all if it wasn't given any choices.
 
 
 ### `--dry-run`
