@@ -42,16 +42,18 @@ run it as follows:
 rofi -show power-menu -modi power-menu:./rofi-power-menu
 ```
 
+### `--options=...`
+
 By default, the menu shows all available options in a particular order. You can
 control the shown options and their order by using `--options` and listing the
 desired options with `/` as the separator. Available choices are:
 
 - `lockscreen`: Lock screen
-- `logout`: Log out (confirmation asked)
+- `logout`: Log out (confirmation can be asked)
 - `suspend`: Suspend
 - `hibernate`: Hibernate
-- `reboot`: Reboot (confirmation asked)
-- `shutdown`: Shutdown (confirmation asked)
+- `reboot`: Reboot (confirmation can be asked)
+- `shutdown`: Shutdown (confirmation can be asked)
 
 For instance, to show only shut down and reboot options:
 
@@ -59,6 +61,15 @@ For instance, to show only shut down and reboot options:
 rofi -show power-menu -modi "power-menu:./rofi-power-menu --options=shutdown/reboot""
 ```
 
+### `--confirm`
+
+If you want the irreversible actions logout, reboot and shutdown to ask for
+confirmation, pass `--confirm` flag. For instance, show the default options but
+require confirmations:
+
+```
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --options=shutdown/reboot""
+```
 
 ## Copyright
 

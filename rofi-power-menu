@@ -23,11 +23,12 @@ confirmShutdown="Yes, shut down"
 confirmLogout="Yes, log out"
 cancel="No, cancel"
 
-# Default options to show
+# Default options
 show="$shutdown\n$reboot\n$suspend\n$hibernate\n$logout\n$lockscreen\n"
+confirm=false
 
 # Parse command-line options
-parsed=$(getopt --options="" --longoptions=options: --name "$0" -- "$@")
+parsed=$(getopt --options="" --longoptions=confirm,options: --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -36,6 +37,11 @@ eval set -- "$parsed"
 unset parsed
 while true; do
     case "$1" in
+        "--confirm")
+            confirm=true
+            shift 1
+            continue
+            ;;
         "--options")
             IFS='/' read -ra options <<< "$2"
             show=""
@@ -54,7 +60,7 @@ while true; do
                     "shutdown")
                         show="$show$shutdown\n" ;;
                     *)
-                        >&2 echo "Invalid option: $option"
+                        echo "Invalid option: $option" >&2
                         exit 1
                         ;;
                 esac
@@ -87,9 +93,14 @@ else
             >&2 echo "User switching not implemented yet"
             ;;
         $logout)
-            echo $confirmLogout
-            echo $cancel
-            ;;
+            if [ $confirm = true ]
+            then
+                confirmed=false
+                echo $confirmLogout
+                echo $cancel
+                exit 0
+            fi
+            ;&  # resume to the next case
         $confirmLogout)
             loginctl terminate-session $XDG_SESSION_ID &> /dev/null
             ;;
@@ -100,16 +111,26 @@ else
             systemctl hibernate &> /dev/null
             ;;
         $reboot)
-            echo $confirmReboot
-            echo $cancel
-            ;;
+            if [ $confirm = true ]
+            then
+                confirmed=false
+                echo $confirmReboot
+                echo $cancel
+                exit 0
+            fi
+            ;&  # resume to the next case
         $confirmReboot)
             systemctl reboot &> /dev/null
             ;;
         $shutdown)
-            echo $confirmShutdown
-            echo $cancel
-            ;;
+            if [ $confirm = true ]
+            then
+                confirmed=false
+                echo $confirmShutdown
+                echo $cancel
+                exit 0
+            fi
+            ;&  # resume to the next case
         $confirmShutdown)
             systemctl poweroff &> /dev/null
             ;;
