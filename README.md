@@ -44,6 +44,37 @@ run it as follows:
 rofi -show power-menu -modi power-menu:./rofi-power-menu
 ```
 
+
+### `--help`
+
+```
+rofi-power-menu - a power menu mode for Rofi
+
+Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES] [--dry-run]
+
+Use with Rofi in script mode. For instance, to ask for shutdown or reboot:
+
+  rofi -show menu -modi "menu:rofi-power-menu --choices=shutdown/reboot"
+
+Available options:
+  --dry-run          Don't perform the selected action but print it to stderr.
+  --choices CHOICES  Show only the selected choices in the given order. Use /
+                     as the separator. Available choices are lockscreen, logout,
+                     suspend, hibernate, reboot and shutdown. By default, all
+                     available choices are shown.
+  --confirm CHOICES  Require confirmation for the gives choices only. Use / as
+                     the separator. Available choices are lockscreen, logout,
+                     suspend, hibernate, reboot and shutdown. By default, only
+                     irreversible actions logout, reboot and shutdown require
+                     confirmation.
+  --choose CHOICE    Preselect the given choice and only ask for a confirmation
+                     (if confirmation is set to be requested). It is strongly
+                     recommended to combine this option with --confirm=CHOICE
+                     if the choice wouldn't require confirmation by default.
+  -h,--help          Show this help text.
+```
+
+
 ### `--choices=CHOICE1/CHOICE2/...`
 
 By default, the menu shows all available choices in a particular order. You can
