@@ -82,11 +82,11 @@ control the shown choices and their order by using `--choices` and listing the
 desired choices with `/` as the separator. Available choices are:
 
 - `lockscreen`: Lock screen
-- `logout`: Log out (confirmation can be asked)
+- `logout`: Log out (confirmation asked by default)
 - `suspend`: Suspend
 - `hibernate`: Hibernate
-- `reboot`: Reboot (confirmation can be asked)
-- `shutdown`: Shutdown (confirmation can be asked)
+- `reboot`: Reboot (confirmation asked by default)
+- `shutdown`: Shutdown (confirmation asked by default)
 
 For instance, to show only `shutdown` and `reboot` choices:
 
