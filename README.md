@@ -50,7 +50,8 @@ rofi -show power-menu -modi power-menu:./rofi-power-menu
 ```
 rofi-power-menu - a power menu mode for Rofi
 
-Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES] [--dry-run]
+Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES]
+                       [--choose CHOICE] [--dry-run]
 
 Use with Rofi in script mode. For instance, to ask for shutdown or reboot:
 
