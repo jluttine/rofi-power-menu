@@ -2,8 +2,10 @@
 
 
 Rofi Power Menu provides a mode for offering basic power menu operations such as
-shutting down, logging out, rebooting and suspending. For irreversible actions,
-it also asks for confirmation.
+shutting down, logging out, rebooting and suspending. By default, it shows all
+choices and asks for confirmation for irreversible actions. The choices, their
+order and whether they require confirmation, can be all configured with
+command-line options.
 
 In contrast to other similar solutions I've found, the power menu is implemented
 as a rofi mode, not as a stand-alone executable that launches rofi by itself.
@@ -42,11 +44,11 @@ run it as follows:
 rofi -show power-menu -modi power-menu:./rofi-power-menu
 ```
 
-### `--options=...`
+### `--choices=...`
 
-By default, the menu shows all available options in a particular order. You can
-control the shown options and their order by using `--options` and listing the
-desired options with `/` as the separator. Available choices are:
+By default, the menu shows all available choices in a particular order. You can
+control the shown choices and their order by using `--choices` and listing the
+desired choices with `/` as the separator. Available choices are:
 
 - `lockscreen`: Lock screen
 - `logout`: Log out (confirmation can be asked)
@@ -55,20 +57,20 @@ desired options with `/` as the separator. Available choices are:
 - `reboot`: Reboot (confirmation can be asked)
 - `shutdown`: Shutdown (confirmation can be asked)
 
-For instance, to show only shut down and reboot options:
+For instance, to show only shut down and reboot choices:
 
 ```
-rofi -show power-menu -modi "power-menu:./rofi-power-menu --options=shutdown/reboot""
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --choices=shutdown/reboot"
 ```
 
 ### `--confirm`
 
 If you want the irreversible actions logout, reboot and shutdown to ask for
-confirmation, pass `--confirm` flag. For instance, show the default options but
+confirmation, pass `--confirm` flag. For instance, show the default choices but
 require confirmations:
 
 ```
-rofi -show power-menu -modi "power-menu:./rofi-power-menu --options=shutdown/reboot""
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --confirm"
 ```
 
 ### `--dry-run`
