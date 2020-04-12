@@ -53,19 +53,21 @@ while true; do
             echo
             echo "Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES] [--dry-run]"
             echo
-            echo "Use with Rofi in script mode. For instance, to show shutdown and reboot choices:"
+            echo "Use with Rofi in script mode. For instance, to ask for shutdown or reboot:"
             echo
-            echo "  rofi -show powermenu -modi \"powermenu:rofi-power-menu --choices=shutdown/reboot\""
+            echo "  rofi -show menu -modi \"menu:rofi-power-menu --choices=shutdown/reboot\""
             echo
             echo "Available options:"
             echo "  --dry-run          Don't perform the selected action but print it to stderr."
-            echo "  --choices CHOICES  Show only the selected choices in given order. Use / as the separator."
-            echo "                     Available choices are lockscreen, logout, suspend, hibernate, reboot"
-            echo "                     and shutdown. By default, all choices are shown."
-            echo "  --confirm CHOICES  Require confirmation for the gives choices only. Use / as the separator."
-            echo "                     Available choices are lockscreen, logout, suspend, hibernate, reboot"
-            echo "                     and shutdown. By default, only irreversible actions logout, reboot and"
-            echo "                     shutdown require confirmation."
+            echo "  --choices CHOICES  Show only the selected choices in given order. Use / as"
+            echo "                     the separator. Available choices are lockscreen, logout,"
+            echo "                     suspend, hibernate, reboot and shutdown. By default, all"
+            echo "                     available choices are shown."
+            echo "  --confirm CHOICES  Require confirmation for the gives choices only. Use / as"
+            echo "                     the separator. Available choices are lockscreen, logout,"
+            echo "                     suspend, hibernate, reboot and shutdown. By default, only"
+            echo "                     irreversible actions logout, reboot and shutdown require"
+            echo "                     confirmation."
             echo "  -h,--help          Show this help text."
             exit 0
             ;;
