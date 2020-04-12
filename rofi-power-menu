@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # This script defines just a mode for rofi instead of being a self-contained
 # executable that launches rofi by itself. This makes it more flexible than
@@ -23,15 +23,59 @@ confirmShutdown="Yes, shut down"
 confirmLogout="Yes, log out"
 cancel="No, cancel"
 
+# Default options to show
+show="$shutdown\n$reboot\n$suspend\n$hibernate\n$logout\n$lockscreen\n"
+
+# Parse command-line options
+parsed=$(getopt --options="" --longoptions=options: --name "$0" -- "$@")
+if [ $? -ne 0 ]; then
+    echo 'Terminating...' >&2
+    exit 1
+fi
+eval set -- "$parsed"
+unset parsed
+while true; do
+    case "$1" in
+        "--options")
+            IFS='/' read -ra options <<< "$2"
+            show=""
+            for option in "${options[@]}"; do
+                case $option in
+                    "lockscreen")
+                        show="$show$lockscreen\n" ;;
+                    "logout")
+                        show="$show$logout\n" ;;
+                    "suspend")
+                        show="$show$suspend\n" ;;
+                    "hibernate")
+                        show="$show$hibernate\n" ;;
+                    "reboot")
+                        show="$show$reboot\n" ;;
+                    "shutdown")
+                        show="$show$shutdown\n" ;;
+                    *)
+                        >&2 echo "Invalid option: $option"
+                        exit 1
+                        ;;
+                esac
+            done
+            shift 2
+            continue
+            ;;
+        "--")
+            shift
+            break
+            ;;
+        *)
+            echo "Internal error" >&2
+            exit 1
+            ;;
+    esac
+done
+
 if [ -z "$1" ]
 then
-    echo $lockscreen
-    #echo $switchuser
-    echo $logout
-    echo $suspend
-    echo $hibernate
-    echo $reboot
-    echo $poweroff
+    printf "$show"
 else
     selection=$@
     case $selection in

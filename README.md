@@ -42,14 +42,22 @@ run it as follows:
 rofi -show power-menu -modi power-menu:./rofi-power-menu
 ```
 
-The power menu mode offers the following options:
+By default, the menu shows all available options in a particular order. You can
+control the shown options and their order by using `--options` and listing the
+desired options with `/` as the separator. Available choices are:
 
-- Lock screen
-- Log out (confirmation asked)
-- Suspend
-- Hibernate
-- Reboot (confirmation asked)
-- Shutdown (confirmation asked)
+- `lockscreen`: Lock screen
+- `logout`: Log out (confirmation asked)
+- `suspend`: Suspend
+- `hibernate`: Hibernate
+- `reboot`: Reboot (confirmation asked)
+- `shutdown`: Shutdown (confirmation asked)
+
+For instance, to show only shut down and reboot options:
+
+```
+rofi -show power-menu -modi "power-menu:./rofi-power-menu --options=shutdown/reboot""
+```
 
 
 ## Copyright
