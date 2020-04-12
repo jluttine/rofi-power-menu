@@ -21,7 +21,7 @@ shutdown="Shut down"
 confirmReboot="Yes, reboot"
 confirmShutdown="Yes, shut down"
 confirmLogout="Yes, log out"
-cancel="Cancel"
+cancel="No, cancel"
 
 if [ -z "$1" ]
 then
@@ -43,8 +43,8 @@ else
             >&2 echo "User switching not implemented yet"
             ;;
         $logout)
-            echo $cancel
             echo $confirmLogout
+            echo $cancel
             ;;
         $confirmLogout)
             loginctl terminate-session $XDG_SESSION_ID &> /dev/null
@@ -56,15 +56,15 @@ else
             systemctl hibernate &> /dev/null
             ;;
         $reboot)
-            echo $cancel
             echo $confirmReboot
+            echo $cancel
             ;;
         $confirmReboot)
             systemctl reboot &> /dev/null
             ;;
         $shutdown)
-            echo $cancel
             echo $confirmShutdown
+            echo $cancel
             ;;
         $confirmShutdown)
             systemctl poweroff &> /dev/null
