@@ -39,7 +39,7 @@ confirmReboot=true
 confirmShutdown=true
 
 # Parse command-line options
-parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices: --name "$0" -- "$@")
+parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose: --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -59,8 +59,8 @@ while true; do
             echo
             echo "Available options:"
             echo "  --dry-run          Don't perform the selected action but print it to stderr."
-            echo "  --choices CHOICES  Show only the selected choices in given order. Use / as"
-            echo "                     the separator. Available choices are lockscreen, logout,"
+            echo "  --choices CHOICES  Show only the selected choices in the given order. Use / "
+            echo "                     as the separator. Available choices are lockscreen, logout,"
             echo "                     suspend, hibernate, reboot and shutdown. By default, all"
             echo "                     available choices are shown."
             echo "  --confirm CHOICES  Require confirmation for the gives choices only. Use / as"
@@ -68,6 +68,10 @@ while true; do
             echo "                     suspend, hibernate, reboot and shutdown. By default, only"
             echo "                     irreversible actions logout, reboot and shutdown require"
             echo "                     confirmation."
+            echo "  --choose CHOICE    Preselect the given choice and only ask for a confirmation"
+            echo "                     (if confirmation is set to be requested). It is strongly"
+            echo "                     recommended to combine this option with --confirm=CHOICE"
+            echo "                     if the choice wouldn't require confirmation by default."
             echo "  -h,--help          Show this help text."
             exit 0
             ;;
@@ -134,6 +138,28 @@ while true; do
             shift 2
             continue
             ;;
+        "--choose")
+            case $2 in
+                "lockscreen")
+                    selection=$lockscreen ;;
+                "logout")
+                    selection=$logout ;;
+                "suspend")
+                    selection=$suspend ;;
+                "hibernate")
+                    selection=$hibernate ;;
+                "reboot")
+                    selection=$reboot ;;
+                "shutdown")
+                    selection=$shutdown ;;
+                *)
+                    echo "Invalid choice in --choose: $2" >&2
+                    exit 1
+                    ;;
+            esac
+            shift 2
+            continue
+            ;;
         "--")
             shift
             break
@@ -145,11 +171,11 @@ while true; do
     esac
 done
 
-if [ -z "$1" ]
+selection=${@:-$selection}
+if [ -z "$selection" ]
 then
     printf "$show"
 else
-    selection=$@
     case $selection in
         $lockscreen)
             if [ $confirmLockscreen = true ]
@@ -255,7 +281,7 @@ else
             exit 0
             ;;
         *)
-            >&2 echo "Invalid choice."
+            >&2 echo "Invalid selection: $selection"
             exit 1
             ;;
     esac
