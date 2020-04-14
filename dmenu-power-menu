@@ -26,7 +26,7 @@ fi
 options=$($powermenu $@)
 while [ -n "$options" ]
 do
-    choice=$(printf "$options" | $dmenu)
+    choice=$(printf "$options" | $dmenu -p "Power menu" -i)
     if [ $? -ne 0 ]
     then
         break

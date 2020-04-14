@@ -147,7 +147,8 @@ rofi -show hibernate -modi "hibernate:./rofi-power-menu --choose=hibernate --con
 If confirmation isn't asked, the action is performed immediately. Although,
 that's probably not useful, it is possible. However, note that Rofi will still
 pop up a menu with no options available. It would be nice if Rofi would not
-appear at all if it wasn't given any choices.
+appear at all if it wasn't given any choices. This works when running the
+accompanied stand-alone script `dmenu-power-menu`.
 
 
 ### `--dry-run`
