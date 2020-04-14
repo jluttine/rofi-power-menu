@@ -15,6 +15,10 @@ combine multiple modi in one mode (`-combi-modi`), pass your own themes
 (`-theme`) and configurations as CLI flags (e.g., `-fullscreen`,
 `-sidebar-mode`, `-matching fuzzy`, `-location`).
 
+There's also a stand-alone script which uses dmenu (or rofi in dmenu mode). It's
+also a bit easier to use as you don't need to type the small amount of rofi
+"boilerplate".
+
 
 ## Install
 
@@ -150,6 +154,15 @@ appear at all if it wasn't given any choices.
 
 For debugging and development purposes, you can pass `--dry-run` flag. Then, the
 selected action isn't performed but only printed to stderr.
+
+
+### dmenu
+
+There's a stand-alone script `dmenu-power-menu` that can be used to run the
+power menu with dmenu (or rofi in dmenu mode if dmenu isn't found). That script
+takes the same command-line arguments as listed above for the main script
+`rofi-power-menu`. The stand-alone script might be easier to use but you cannot
+pass arguments to dmenu/rofi so their configuration is hardcoded.
 
 
 ## Copyright
