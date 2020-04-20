@@ -14,13 +14,13 @@ else
     dmenu="rofi -dmenu"
 fi
 
-command -v rofi-power-menu >/dev/null
+command -v ./rofi-power-menu >/dev/null
 powermenu_exists=$?
 if [ $powermenu_exists -eq 0 ]
 then
-    powermenu="rofi-power-menu"
-else
     powermenu="./rofi-power-menu"
+else
+    powermenu="rofi-power-menu"
 fi
 
 options=$($powermenu $@ | xxd)
