@@ -17,6 +17,22 @@ hibernate="Hibernate"
 reboot="Reboot"
 shutdown="Shut down"
 
+lockscreenIcon="system-lock-screen-symbolic"
+switchuserIcon="system-switch-user-symbolic"
+logoutIcon="system-log-out-symbolic"
+suspendIcon="night-light-symbolic"
+hibernateIcon="drive-harddisk-symbolic"
+rebootIcon="system-reboot-symbolic"
+shutdownIcon="system-shutdown-symbolic"
+
+lockscreenEntry="$lockscreen\0icon\x1f$lockscreenIcon"
+switchuserEntry="$switchuser\0icon\x1f$switchuserIcon"
+logoutEntry="$logout\0icon\x1f$logoutIcon"
+suspendEntry="$suspend\0icon\x1f$suspendIcon"
+hibernateEntry="$hibernate\0icon\x1f$hibernateIcon"
+rebootEntry="$reboot\0icon\x1f$rebootIcon"
+shutdownEntry="$shutdown\0icon\x1f$shutdownIcon"
+
 lockscreenConfirmation="Yes, lock screen"
 switchuserConfirmation="Yes, switch user"
 logoutConfirmation="Yes, log out"
@@ -27,7 +43,7 @@ shutdownConfirmation="Yes, shut down"
 cancel="No, cancel"
 
 # Default options
-show="$shutdown\n$reboot\n$suspend\n$hibernate\n$logout\n$lockscreen\n"
+show="$shutdownEntry\n$rebootEntry\n$suspendEntry\n$hibernateEntry\n$logoutEntry\n$lockscreenEntry\n"
 dryrun=false
 # By default, ask for confirmation for actions that are irreversible
 confirmLockscreen=false
@@ -121,17 +137,17 @@ while true; do
             for choice in "${choices[@]}"; do
                 case $choice in
                     "lockscreen")
-                        show="$show$lockscreen\n" ;;
+                        show="$show$lockscreenEntry\n" ;;
                     "logout")
-                        show="$show$logout\n" ;;
+                        show="$show$logoutEntry\n" ;;
                     "suspend")
-                        show="$show$suspend\n" ;;
+                        show="$show$suspendEntry\n" ;;
                     "hibernate")
-                        show="$show$hibernate\n" ;;
+                        show="$show$hibernateEntry\n" ;;
                     "reboot")
-                        show="$show$reboot\n" ;;
+                        show="$show$rebootEntry\n" ;;
                     "shutdown")
-                        show="$show$shutdown\n" ;;
+                        show="$show$shutdownEntry\n" ;;
                     *)
                         echo "Invalid choice in --choices: $choice" >&2
                         exit 1

@@ -23,13 +23,13 @@ else
     powermenu="./rofi-power-menu"
 fi
 
-options=$($powermenu $@)
+options=$($powermenu $@ | xxd)
 while [ -n "$options" ]
 do
-    choice=$(printf "$options" | $dmenu -p "Power menu" -i)
+    choice=$(echo "$options" | xxd -r | $dmenu -p "Power menu" -i -show-icons)
     if [ $? -ne 0 ]
     then
         break
     fi
-    options=$($powermenu $@ "$choice")
+    options=$($powermenu $@ "$choice" | xxd)
 done
