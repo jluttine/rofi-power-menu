@@ -5,14 +5,15 @@ Rofi Power Menu provides a mode for offering basic power menu operations such as
 shutting down, logging out, rebooting and suspending. By default, it shows all
 choices and asks for confirmation for irreversible actions. The choices, their
 order and whether they require confirmation, can be all configured with
-command-line options.
+command-line options. It also shows icons if you pass `-show-icons` to rofi and
+have some normal icon set properly installed.
 
 In contrast to other similar solutions I've found, the power menu is implemented
 as a rofi mode, not as a stand-alone executable that launches rofi by itself.
 This makes it possible to combine the script with the full power of how rofi can
 use modi. For instance, you can have multiple modi available (`-modi`) or
 combine multiple modi in one mode (`-combi-modi`), pass your own themes
-(`-theme`) and configurations as CLI flags (e.g., `-fullscreen`,
+(`-theme`) and configurations as CLI flags (e.g., `-show-icons`, `-fullscreen`,
 `-sidebar-mode`, `-matching fuzzy`, `-location`).
 
 There's also a stand-alone script which uses dmenu (or rofi in dmenu mode). It's
