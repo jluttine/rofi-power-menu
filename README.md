@@ -23,7 +23,13 @@ also a bit easier to use as you don't need to type the small amount of rofi
 Just to give an example, the screenshot below shows Rofi Power Menu launched as:
 
 ```
-rofi -show p -modi p:rofi-power-menu -show-icons -theme Paper -width 20 -lines 6 -icon-theme Adwaita
+rofi -show p -modi p:rofi-power-menu \
+  -show-icons \
+  -icon-theme Adwaita \
+  -theme Paper \
+  -font "JetBrains Mono 16" \
+  -width 20 \
+  -lines 6
 ```
 
 ![Screenshot of Rofi Power Menu](./screenshot.png)
