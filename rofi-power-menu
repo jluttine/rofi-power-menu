@@ -24,6 +24,7 @@ suspendIcon="night-light-symbolic"
 hibernateIcon="drive-harddisk-symbolic"
 rebootIcon="system-reboot-symbolic"
 shutdownIcon="system-shutdown-symbolic"
+cancelIcon="window-close-symbolic"
 
 lockscreenEntry="$lockscreen\0icon\x1f$lockscreenIcon"
 switchuserEntry="$switchuser\0icon\x1f$switchuserIcon"
@@ -41,6 +42,15 @@ hibernateConfirmation="Yes, hibernate"
 rebootConfirmation="Yes, reboot"
 shutdownConfirmation="Yes, shut down"
 cancel="No, cancel"
+
+lockscreenConfirmationEntry="$lockscreenConfirmation\0icon\x1f$lockscreenIcon"
+switchuserConfirmationEntry="$switchuserConfirmation\0icon\x1f$switchuserIcon"
+logoutConfirmationEntry="$logoutConfirmation\0icon\x1f$logoutIcon"
+suspendConfirmationEntry="$suspendConfirmation\0icon\x1f$suspendIcon"
+hibernateConfirmationEntry="$hibernateConfirmation\0icon\x1f$hibernateIcon"
+rebootConfirmationEntry="$rebootConfirmation\0icon\x1f$rebootIcon"
+shutdownConfirmationEntry="$shutdownConfirmation\0icon\x1f$shutdownIcon"
+cancelEntry="$cancel\0icon\x1f$cancelIcon"
 
 # Default options
 show="$shutdownEntry\n$rebootEntry\n$suspendEntry\n$hibernateEntry\n$logoutEntry\n$lockscreenEntry\n"
@@ -199,8 +209,8 @@ else
         $lockscreen)
             if [ $confirmLockscreen = true ]
             then
-                echo $lockscreenConfirmation
-                echo $cancel
+                echo -e $lockscreenConfirmationEntry
+                echo -e $cancelEntry
                 exit 0
             fi
             ;&
@@ -219,8 +229,8 @@ else
         $logout)
             if [ $confirmLogout = true ]
             then
-                echo $logoutConfirmation
-                echo $cancel
+                echo -e $logoutConfirmationEntry
+                echo -e $cancelEntry
                 exit 0
             fi
             ;&
@@ -235,8 +245,8 @@ else
         $suspend)
             if [ $confirmSuspend = true ]
             then
-                echo $suspendConfirmation
-                echo $cancel
+                echo -e $suspendConfirmationEntry
+                echo -e $cancelEntry
                 exit 0
             fi
             ;&
@@ -251,8 +261,8 @@ else
         $hibernate)
             if [ $confirmHibernate = true ]
             then
-                echo $hibernateConfirmation
-                echo $cancel
+                echo -e $hibernateConfirmationEntry
+                echo -e $cancelEntry
                 exit 0
             fi
             ;&
@@ -267,8 +277,8 @@ else
         $reboot)
             if [ $confirmReboot = true ]
             then
-                echo $rebootConfirmation
-                echo $cancel
+                echo -e $rebootConfirmationEntry
+                echo -e $cancelEntry
                 exit 0
             fi
             ;&  # resume to the next case
@@ -283,8 +293,8 @@ else
         $shutdown)
             if [ $confirmShutdown = true ]
             then
-                echo $shutdownConfirmation
-                echo $cancel
+                echo -e $shutdownConfirmationEntry
+                echo -e $cancelEntry
                 exit 0
             fi
             ;&
