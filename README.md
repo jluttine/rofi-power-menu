@@ -20,6 +20,14 @@ There's also a stand-alone script which uses dmenu (or rofi in dmenu mode). It's
 also a bit easier to use as you don't need to type the small amount of rofi
 "boilerplate".
 
+Just to give an example, the screenshot below shows Rofi Power Menu launched as:
+
+```
+rofi -show p -modi p:rofi-power-menu -show-icons -theme Paper -width 20 -lines 6 -icon-theme Adwaita
+```
+
+![Screenshot of Rofi Power Menu](./screenshot.png)
+
 
 ## Install
 
