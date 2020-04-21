@@ -203,12 +203,14 @@ done
 selection=${@:-$selection}
 if [ -z "$selection" ]
 then
+    printf "\0prompt\x1fPower menu\n"
     printf "$show"
 else
     case $selection in
         $lockscreen)
             if [ $confirmLockscreen = true ]
             then
+                echo -e "\0prompt\x1fAre you sure"
                 echo -e $lockscreenConfirmationEntry
                 echo -e $cancelEntry
                 exit 0
@@ -229,6 +231,7 @@ else
         $logout)
             if [ $confirmLogout = true ]
             then
+                echo -e "\0prompt\x1fAre you sure"
                 echo -e $logoutConfirmationEntry
                 echo -e $cancelEntry
                 exit 0
@@ -245,6 +248,7 @@ else
         $suspend)
             if [ $confirmSuspend = true ]
             then
+                echo -e "\0prompt\x1fAre you sure"
                 echo -e $suspendConfirmationEntry
                 echo -e $cancelEntry
                 exit 0
@@ -261,6 +265,7 @@ else
         $hibernate)
             if [ $confirmHibernate = true ]
             then
+                echo -e "\0prompt\x1fAre you sure"
                 echo -e $hibernateConfirmationEntry
                 echo -e $cancelEntry
                 exit 0
@@ -277,6 +282,7 @@ else
         $reboot)
             if [ $confirmReboot = true ]
             then
+                echo -e "\0prompt\x1fAre you sure"
                 echo -e $rebootConfirmationEntry
                 echo -e $cancelEntry
                 exit 0
@@ -293,6 +299,7 @@ else
         $shutdown)
             if [ $confirmShutdown = true ]
             then
+                echo -e "\0prompt\x1fAre you sure"
                 echo -e $shutdownConfirmationEntry
                 echo -e $cancelEntry
                 exit 0
