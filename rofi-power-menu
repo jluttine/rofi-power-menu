@@ -205,9 +205,10 @@ then
     selection="${@}"
 fi
 
+printf "\0no-custom\x1ftrue\n"
 if [ -z "$selection" ]
 then
-    printf "\0prompt\x1fPower menu\n"
+    echo -e "\0prompt\x1fPower menu"
     printf "$show"
 else
     case $selection in
