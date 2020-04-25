@@ -200,7 +200,11 @@ while true; do
     esac
 done
 
-selection=${@:-$selection}
+if [ -n "${@}" ]
+then
+    selection="${@}"
+fi
+
 if [ -z "$selection" ]
 then
     printf "\0prompt\x1fPower menu\n"
