@@ -3,17 +3,10 @@
 # Simple stand-alone wrapper for rofi-power-menu.
 #
 # This script takes the same CLI arguments as rofi-power-menu.
+#
+# rofi-script-to-dmenu needs to be installed
 
-# Use rofi if dmenu isn't found
-command -v dmenu >/dev/null
-dmenu_exists=$?
-if [ $dmenu_exists -eq 0 ]
-then
-    dmenu="dmenu"
-else
-    dmenu="rofi -dmenu"
-fi
-
+# Use local rofi-power-menu if present. This makes developing easier.
 command -v ./rofi-power-menu >/dev/null
 powermenu_exists=$?
 if [ $powermenu_exists -eq 0 ]
@@ -23,13 +16,5 @@ else
     powermenu="rofi-power-menu"
 fi
 
-options=$($powermenu $@ | xxd)
-while [ -n "$options" ]
-do
-    choice=$(echo "$options" | xxd -r | $dmenu -p "Power menu" -i -show-icons)
-    if [ $? -ne 0 ]
-    then
-        break
-    fi
-    options=$($powermenu $@ "$choice" | xxd)
-done
+cmd="$powermenu $@"
+rofi-script-to-dmenu "$cmd"

@@ -178,7 +178,9 @@ There's a stand-alone script `dmenu-power-menu` that can be used to run the
 power menu with dmenu (or rofi in dmenu mode if dmenu isn't found). That script
 takes the same command-line arguments as listed above for the main script
 `rofi-power-menu`. The stand-alone script might be easier to use but you cannot
-pass arguments to dmenu/rofi so their configuration is hardcoded.
+pass arguments to dmenu/rofi so their configuration is hardcoded. Also, you need
+to install
+[rofi-script-to-dmenu](https://github.com/jluttine/rofi-script-to-dmenu).
 
 
 ## Copyright
