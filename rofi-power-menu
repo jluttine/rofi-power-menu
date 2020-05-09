@@ -9,60 +9,71 @@
 #
 # See README.md for more information.
 
-lockscreen="Lock screen"
-switchuser="Switch user"
-logout="Log out"
-suspend="Suspend"
-hibernate="Hibernate"
-reboot="Reboot"
-shutdown="Shut down"
+set -e
+set -u
 
-lockscreenIcon="system-lock-screen-symbolic"
-switchuserIcon="system-switch-user-symbolic"
-logoutIcon="system-log-out-symbolic"
-suspendIcon="night-light-symbolic"
-hibernateIcon="drive-harddisk-symbolic"
-rebootIcon="system-reboot-symbolic"
-shutdownIcon="system-shutdown-symbolic"
-cancelIcon="window-close-symbolic"
+# All supported choices
+all=(shutdown reboot suspend hibernate logout lockscreen)
 
-lockscreenEntry="$lockscreen\0icon\x1f$lockscreenIcon"
-switchuserEntry="$switchuser\0icon\x1f$switchuserIcon"
-logoutEntry="$logout\0icon\x1f$logoutIcon"
-suspendEntry="$suspend\0icon\x1f$suspendIcon"
-hibernateEntry="$hibernate\0icon\x1f$hibernateIcon"
-rebootEntry="$reboot\0icon\x1f$rebootIcon"
-shutdownEntry="$shutdown\0icon\x1f$shutdownIcon"
+# By default, show all (i.e., just copy the array)
+show=("${all[@]}")
 
-lockscreenConfirmation="Yes, lock screen"
-switchuserConfirmation="Yes, switch user"
-logoutConfirmation="Yes, log out"
-suspendConfirmation="Yes, suspend"
-hibernateConfirmation="Yes, hibernate"
-rebootConfirmation="Yes, reboot"
-shutdownConfirmation="Yes, shut down"
-cancel="No, cancel"
+declare -A messages
+messages[lockscreen]="Lock screen"
+messages[switchuser]="Switch user"
+messages[logout]="Log out"
+messages[suspend]="Suspend"
+messages[hibernate]="Hibernate"
+messages[reboot]="Reboot"
+messages[shutdown]="Shut down"
 
-lockscreenConfirmationEntry="$lockscreenConfirmation\0icon\x1f$lockscreenIcon"
-switchuserConfirmationEntry="$switchuserConfirmation\0icon\x1f$switchuserIcon"
-logoutConfirmationEntry="$logoutConfirmation\0icon\x1f$logoutIcon"
-suspendConfirmationEntry="$suspendConfirmation\0icon\x1f$suspendIcon"
-hibernateConfirmationEntry="$hibernateConfirmation\0icon\x1f$hibernateIcon"
-rebootConfirmationEntry="$rebootConfirmation\0icon\x1f$rebootIcon"
-shutdownConfirmationEntry="$shutdownConfirmation\0icon\x1f$shutdownIcon"
-cancelEntry="$cancel\0icon\x1f$cancelIcon"
+declare -A icons
+icons[lockscreen]="system-lock-screen-symbolic"
+icons[switchuser]="system-switch-user-symbolic"
+icons[logout]="system-log-out-symbolic"
+icons[suspend]="night-light-symbolic"
+icons[hibernate]="drive-harddisk-symbolic"
+icons[reboot]="system-reboot-symbolic"
+icons[shutdown]="system-shutdown-symbolic"
+icons[cancel]="window-close-symbolic"
 
-# Default options
-show="$shutdownEntry\n$rebootEntry\n$suspendEntry\n$hibernateEntry\n$logoutEntry\n$lockscreenEntry\n"
-dryrun=false
+declare -A actions
+actions[lockscreen]="loginctl lock-session $XDG_SESSION_ID"
+#actions[switchuser]="???"
+actions[logout]="loginctl terminate-session $XDG_SESSION_ID"
+actions[suspend]="systemctl suspend"
+actions[hibernate]="systemctl hibernate"
+actions[reboot]="systemctl reboot"
+actions[shutdown]="systemctl poweroff"
+
+declare -A confirmationMessages
+confirmationMessages[lockscreen]="Yes, lock screen"
+confirmationMessages[switchuser]="Yes, switch user"
+confirmationMessages[logout]="Yes, log out"
+confirmationMessages[suspend]="Yes, suspend"
+confirmationMessages[hibernate]="Yes, hibernate"
+confirmationMessages[reboot]="Yes, reboot"
+confirmationMessages[shutdown]="Yes, shut down"
+confirmationMessages[cancel]="No, cancel"
+
 # By default, ask for confirmation for actions that are irreversible
-confirmLockscreen=false
-confirmSwitchuser=false
-confirmLogout=true
-confirmSuspend=false
-confirmHibernate=false
-confirmReboot=true
-confirmShutdown=true
+confirmations=(reboot shutdown logout)
+
+# By default, no dry run
+dryrun=false
+
+function check_valid {
+    option="$1"
+    shift 1
+    for entry in "${@}"
+    do
+        if [ -z "${messages[$entry]+x}" ]
+        then
+            echo "Invalid choice in $1: $entry" >&2
+            exit 1
+        fi
+    done
+}
 
 # Parse command-line options
 parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose: --name "$0" -- "$@")
@@ -110,82 +121,21 @@ while true; do
             continue
             ;;
         "--confirm")
-            confirmLockscreen=false
-            confirmSwitchuser=false
-            confirmLogout=false
-            confirmSuspend=false
-            confirmHibernate=false
-            confirmReboot=false
-            confirmShutdown=false
-            IFS='/' read -ra choices <<< "$2"
-            for choice in "${choices[@]}"; do
-                case $choice in
-                    "lockscreen")
-                        confirLockscreen=true ;;
-                    "logout")
-                        confirmLogout=true ;;
-                    "suspend")
-                        confirmSuspend=true ;;
-                    "hibernate")
-                        confirmHibernate=true ;;
-                    "reboot")
-                        confirmReboot=true ;;
-                    "shutdown")
-                        confirmShutdown=true ;;
-                    *)
-                        echo "Invalid choice in --confirm: $choice" >&2
-                        exit 1
-                        ;;
-                esac
-            done
+            IFS='/' read -ra confirmations <<< "$2"
+            check_valid "$1" "${confirmations[@]}"
             shift 2
             continue
             ;;
         "--choices")
-            IFS='/' read -ra choices <<< "$2"
-            show=""
-            for choice in "${choices[@]}"; do
-                case $choice in
-                    "lockscreen")
-                        show="$show$lockscreenEntry\n" ;;
-                    "logout")
-                        show="$show$logoutEntry\n" ;;
-                    "suspend")
-                        show="$show$suspendEntry\n" ;;
-                    "hibernate")
-                        show="$show$hibernateEntry\n" ;;
-                    "reboot")
-                        show="$show$rebootEntry\n" ;;
-                    "shutdown")
-                        show="$show$shutdownEntry\n" ;;
-                    *)
-                        echo "Invalid choice in --choices: $choice" >&2
-                        exit 1
-                        ;;
-                esac
-            done
+            IFS='/' read -ra show <<< "$2"
+            check_valid "$1" "${show[@]}"
             shift 2
             continue
             ;;
         "--choose")
-            case $2 in
-                "lockscreen")
-                    selection=$lockscreen ;;
-                "logout")
-                    selection=$logout ;;
-                "suspend")
-                    selection=$suspend ;;
-                "hibernate")
-                    selection=$hibernate ;;
-                "reboot")
-                    selection=$reboot ;;
-                "shutdown")
-                    selection=$shutdown ;;
-                *)
-                    echo "Invalid choice in --choose: $2" >&2
-                    exit 1
-                    ;;
-            esac
+            # Check that the choice is valid
+            check_valid "$1" "$2"
+            selection="${messages[$2]}"
             shift 2
             continue
             ;;
@@ -200,130 +150,61 @@ while true; do
     esac
 done
 
-if [ -n "${@}" ]
+# If arguments given, use those as the selection
+if [ $# -gt 0 ]
 then
     selection="${@}"
 fi
 
-printf "\0no-custom\x1ftrue\n"
-if [ -z "$selection" ]
+# Don't allow custom entries
+echo -e "\0no-custom\x1ftrue"
+
+if [ -z "${selection+x}" ]
 then
     echo -e "\0prompt\x1fPower menu"
-    printf "$show"
+    for entry in "${show[@]}"
+    do
+        echo -e "${messages[$entry]}\0icon\x1f${icons[$entry]}"
+    done
 else
-    case $selection in
-        $lockscreen)
-            if [ $confirmLockscreen = true ]
-            then
-                echo -e "\0prompt\x1fAre you sure"
-                echo -e $lockscreenConfirmationEntry
-                echo -e $cancelEntry
-                exit 0
-            fi
-            ;&
-        $lockscreenConfirmation)
+    for entry in "${show[@]}"
+    do
+        if [ "$selection" = "${messages[$entry]}" ]
+        then
+            # Check if the selected entry is listed in confirmation requirements
+            for confirmation in "${confirmations[@]}"
+            do
+                if [ "$entry" = "$confirmation" ]
+                then
+                    # Ask for confirmation
+                    echo -e "\0prompt\x1fAre you sure"
+                    echo -e "${confirmationMessages[$entry]}\0icon\x1f${icons[$entry]}"
+                    echo -e "${confirmationMessages[cancel]}\0icon\x1f${icons[cancel]}"
+                    exit 0
+                fi
+            done
+            # If not, then no confirmation is required, so mark confirmed
+            selection="${confirmationMessages[$entry]}"
+        fi
+        if [ "$selection" = "${confirmationMessages[$entry]}" ]
+        then
             if [ $dryrun = true ]
             then
-                echo "Locking screen.." >&2
+                # Tell what would have been done
+                echo "Selected: $entry" >&2
             else
-                loginctl lock-session $XDG_SESSION_ID &> /dev/null
+                # Perform the action
+                ${actions[$entry]}
             fi
-            ;;
-        $switchuser)
-            # TODO: I suppose this is window manager dependent?
-            echo "User switching not implemented yet" >&2
-            ;;
-        $logout)
-            if [ $confirmLogout = true ]
-            then
-                echo -e "\0prompt\x1fAre you sure"
-                echo -e $logoutConfirmationEntry
-                echo -e $cancelEntry
-                exit 0
-            fi
-            ;&
-        $logoutConfirmation)
-            if [ $dryrun = true ]
-            then
-                echo "Logging out.." >&2
-            else
-                loginctl terminate-session $XDG_SESSION_ID &> /dev/null
-            fi
-            ;;
-        $suspend)
-            if [ $confirmSuspend = true ]
-            then
-                echo -e "\0prompt\x1fAre you sure"
-                echo -e $suspendConfirmationEntry
-                echo -e $cancelEntry
-                exit 0
-            fi
-            ;&
-        $suspendConfirmation)
-            if [ $dryrun = true ]
-            then
-                echo "Suspending.." >&2
-            else
-                systemctl suspend &> /dev/null
-            fi
-            ;;
-        $hibernate)
-            if [ $confirmHibernate = true ]
-            then
-                echo -e "\0prompt\x1fAre you sure"
-                echo -e $hibernateConfirmationEntry
-                echo -e $cancelEntry
-                exit 0
-            fi
-            ;&
-        $hibernateConfirmation)
-            if [ $dryrun = true ]
-            then
-                echo "Hibernating.." >&2
-            else
-                systemctl hibernate &> /dev/null
-            fi
-            ;;
-        $reboot)
-            if [ $confirmReboot = true ]
-            then
-                echo -e "\0prompt\x1fAre you sure"
-                echo -e $rebootConfirmationEntry
-                echo -e $cancelEntry
-                exit 0
-            fi
-            ;&  # resume to the next case
-        $rebootConfirmation)
-            if [ $dryrun = true ]
-            then
-                echo "Rebooting.." >&2
-            else
-                systemctl reboot &> /dev/null
-            fi
-            ;;
-        $shutdown)
-            if [ $confirmShutdown = true ]
-            then
-                echo -e "\0prompt\x1fAre you sure"
-                echo -e $shutdownConfirmationEntry
-                echo -e $cancelEntry
-                exit 0
-            fi
-            ;&
-        $shutdownConfirmation)
-            if [ $dryrun = true ]
-            then
-                echo "Shutting down.." >&2
-            else
-                systemctl poweroff &> /dev/null
-            fi
-            ;;
-        $cancel)
             exit 0
-            ;;
-        *)
-            >&2 echo "Invalid selection: $selection"
-            exit 1
-            ;;
-    esac
+        fi
+        if [ "$selection" = "${confirmationMessages[cancel]}" ]
+        then
+            # Do nothing
+            exit 0
+        fi
+    done
+    # The selection didn't match anything, so raise an error
+    echo "Invalid selection: $selection" >&2
+    exit 1
 fi
