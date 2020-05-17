@@ -18,24 +18,24 @@ all=(shutdown reboot suspend hibernate logout lockscreen)
 # By default, show all (i.e., just copy the array)
 show=("${all[@]}")
 
-declare -A messages
-messages[lockscreen]="Lock screen"
-messages[switchuser]="Switch user"
-messages[logout]="Log out"
-messages[suspend]="Suspend"
-messages[hibernate]="Hibernate"
-messages[reboot]="Reboot"
-messages[shutdown]="Shut down"
+declare -A texts
+texts[lockscreen]="lock screen"
+texts[switchuser]="switch user"
+texts[logout]="log out"
+texts[suspend]="suspend"
+texts[hibernate]="hibernate"
+texts[reboot]="reboot"
+texts[shutdown]="shut down"
 
 declare -A icons
-icons[lockscreen]="system-lock-screen-symbolic"
-icons[switchuser]="system-switch-user-symbolic"
-icons[logout]="system-log-out-symbolic"
-icons[suspend]="night-light-symbolic"
-icons[hibernate]="drive-harddisk-symbolic"
-icons[reboot]="system-reboot-symbolic"
-icons[shutdown]="system-shutdown-symbolic"
-icons[cancel]="window-close-symbolic"
+icons[lockscreen]="\uf023"
+icons[switchuser]="\uf518"
+icons[logout]="\uf842"
+icons[suspend]="\uf9b1"
+icons[hibernate]="\uf7c9"
+icons[reboot]="\ufc07"
+icons[shutdown]="\uf011"
+icons[cancel]="\u00d7"
 
 declare -A actions
 actions[lockscreen]="loginctl lock-session $XDG_SESSION_ID"
@@ -46,28 +46,19 @@ actions[hibernate]="systemctl hibernate"
 actions[reboot]="systemctl reboot"
 actions[shutdown]="systemctl poweroff"
 
-declare -A confirmationMessages
-confirmationMessages[lockscreen]="Yes, lock screen"
-confirmationMessages[switchuser]="Yes, switch user"
-confirmationMessages[logout]="Yes, log out"
-confirmationMessages[suspend]="Yes, suspend"
-confirmationMessages[hibernate]="Yes, hibernate"
-confirmationMessages[reboot]="Yes, reboot"
-confirmationMessages[shutdown]="Yes, shut down"
-confirmationMessages[cancel]="No, cancel"
-
 # By default, ask for confirmation for actions that are irreversible
 confirmations=(reboot shutdown logout)
 
 # By default, no dry run
 dryrun=false
+showsymbols=true
 
 function check_valid {
     option="$1"
     shift 1
     for entry in "${@}"
     do
-        if [ -z "${messages[$entry]+x}" ]
+        if [ -z "${actions[$entry]+x}" ]
         then
             echo "Invalid choice in $1: $entry" >&2
             exit 1
@@ -76,7 +67,7 @@ function check_valid {
 }
 
 # Parse command-line options
-parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose: --name "$0" -- "$@")
+parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -89,7 +80,7 @@ while true; do
             echo "rofi-power-menu - a power menu mode for Rofi"
             echo
             echo "Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES]"
-            echo "                       [--choose CHOICE] [--dry-run]"
+            echo "                       [--choose CHOICE] [--dry-run] [--symbols|--no-symbols]"
             echo
             echo "Use with Rofi in script mode. For instance, to ask for shutdown or reboot:"
             echo
@@ -112,32 +103,39 @@ while true; do
             echo "                     if the choice wouldn't require confirmation by default."
             echo "                     Available choices are lockscreen, logout, suspend,"
             echo "                     hibernate, reboot and shutdown."
+            echo "  --[no-]symbols     Show Unicode symbols or not. Requires a font with support"
+            echo "                     for the symbols. Use, for instance, fonts from the"
+            echo "                     Nerdfonts collection. By default, they are shown"
             echo "  -h,--help          Show this help text."
             exit 0
             ;;
         "--dry-run")
             dryrun=true
             shift 1
-            continue
             ;;
         "--confirm")
             IFS='/' read -ra confirmations <<< "$2"
             check_valid "$1" "${confirmations[@]}"
             shift 2
-            continue
             ;;
         "--choices")
             IFS='/' read -ra show <<< "$2"
             check_valid "$1" "${show[@]}"
             shift 2
-            continue
             ;;
         "--choose")
             # Check that the choice is valid
             check_valid "$1" "$2"
-            selection="${messages[$2]}"
+            selectionID="$2"
             shift 2
-            continue
+            ;;
+        "--symbols")
+            showsymbols=true
+            shift 1
+            ;;
+        "--no-symbols")
+            showsymbols=false
+            shift 1
             ;;
         "--")
             shift
@@ -150,14 +148,52 @@ while true; do
     esac
 done
 
-# If arguments given, use those as the selection
+# Define the messages after parsing the CLI options so that it is possible to
+# configure them in the future.
+
+function write_message {
+    icon="<span font_size=\"medium\">$1</span>"
+    text="<span font_size=\"medium\" allow_breaks=\"true\">$2</span>"
+    if [ "$showsymbols" = "true" ]
+    then
+        echo -n "\u200e$icon \u2068$text\u2069"
+    else
+        echo -n "$text"
+    fi
+}
+
+function print_selection {
+    echo -e "$1" | $(read -r -d '' entry; echo "echo $entry")
+}
+
+declare -A messages
+declare -A confirmationMessages
+for entry in "${all[@]}"
+do
+    messages[$entry]=$(write_message "${icons[$entry]}" "${texts[$entry]^}")
+done
+for entry in "${all[@]}"
+do
+    confirmationMessages[$entry]=$(write_message "${icons[$entry]}" "Yes, ${texts[$entry]}")
+done
+confirmationMessages[cancel]=$(write_message "${icons[cancel]}" "No, cancel")
+
 if [ $# -gt 0 ]
 then
+    # If arguments given, use those as the selection
     selection="${@}"
+else
+    # Otherwise, use the CLI passed choice if given
+    if [ -n "${selectionID+x}" ]
+    then
+        selection="${messages[$selectionID]}"
+    fi
 fi
 
 # Don't allow custom entries
 echo -e "\0no-custom\x1ftrue"
+# Use markup
+echo -e "\0markup-rows\x1ftrue"
 
 if [ -z "${selection+x}" ]
 then
@@ -169,7 +205,7 @@ then
 else
     for entry in "${show[@]}"
     do
-        if [ "$selection" = "${messages[$entry]}" ]
+        if [ "$selection" = "$(print_selection "${messages[$entry]}")" ]
         then
             # Check if the selected entry is listed in confirmation requirements
             for confirmation in "${confirmations[@]}"
@@ -184,9 +220,9 @@ else
                 fi
             done
             # If not, then no confirmation is required, so mark confirmed
-            selection="${confirmationMessages[$entry]}"
+            selection=$(print_selection "${confirmationMessages[$entry]}")
         fi
-        if [ "$selection" = "${confirmationMessages[$entry]}" ]
+        if [ "$selection" = "$(print_selection "${confirmationMessages[$entry]}")" ]
         then
             if [ $dryrun = true ]
             then
@@ -198,7 +234,7 @@ else
             fi
             exit 0
         fi
-        if [ "$selection" = "${confirmationMessages[cancel]}" ]
+        if [ "$selection" = "$(print_selection "${confirmationMessages[cancel]}")" ]
         then
             # Do nothing
             exit 0

@@ -5,15 +5,16 @@ Rofi Power Menu provides a mode for offering basic power menu operations such as
 shutting down, logging out, rebooting and suspending. By default, it shows all
 choices and asks for confirmation for irreversible actions. The choices, their
 order and whether they require confirmation, can be all configured with
-command-line options. It also shows icons if you pass `-show-icons` to rofi and
-have some normal icon set properly installed.
+command-line options. It also shows symbols by default, but this requires a
+monospace font with good support for symbols, so it can be disabled with
+`--no-symbols`.
 
 In contrast to other similar solutions I've found, the power menu is implemented
 as a rofi mode, not as a stand-alone executable that launches rofi by itself.
 This makes it possible to combine the script with the full power of how rofi can
 use modi. For instance, you can have multiple modi available (`-modi`) or
 combine multiple modi in one mode (`-combi-modi`), pass your own themes
-(`-theme`) and configurations as CLI flags (e.g., `-show-icons`, `-fullscreen`,
+(`-theme`) and configurations as CLI flags (e.g., `-fullscreen`,
 `-sidebar-mode`, `-matching fuzzy`, `-location`).
 
 There's also a stand-alone script which uses dmenu (or rofi in dmenu mode). It's
@@ -24,10 +25,8 @@ Just to give an example, the screenshot below shows Rofi Power Menu launched as:
 
 ```
 rofi -show p -modi p:rofi-power-menu \
-  -show-icons \
-  -icon-theme Adwaita \
   -theme Paper \
-  -font "JetBrains Mono 16" \
+  -font "JetBrains Mono NF 16" \
   -width 20 \
   -lines 6
 ```
@@ -70,7 +69,7 @@ rofi -show power-menu -modi power-menu:./rofi-power-menu
 rofi-power-menu - a power menu mode for Rofi
 
 Usage: rofi-power-menu [--choices CHOICES] [--confirm CHOICES]
-                       [--choose CHOICE] [--dry-run]
+                       [--choose CHOICE] [--dry-run] [--symbols|--no-symbols]
 
 Use with Rofi in script mode. For instance, to ask for shutdown or reboot:
 
@@ -93,6 +92,9 @@ Available options:
                      if the choice wouldn't require confirmation by default.
                      Available choices are lockscreen, logout, suspend,
                      hibernate, reboot and shutdown.
+  --[no-]symbols     Show Unicode symbols or not. Requires a font with support
+                     for the symbols. Use, for instance, fonts from the
+                     Nerdfonts collection. By default, they are shown
   -h,--help          Show this help text.
 ```
 
@@ -164,6 +166,16 @@ that's probably not useful, it is possible. However, note that Rofi will still
 pop up a menu with no options available. It would be nice if Rofi would not
 appear at all if it wasn't given any choices. This works when running the
 accompanied stand-alone script `dmenu-power-menu`.
+
+
+### `--[no-]symbols`
+
+Disable or enable Unicode symbols/icons/glyphs. They are enabled by default. In
+order for them to show up correctly, you need a font that supports the used
+glyphs. It is recommended to use fonts from the [Nerdfonts
+collection](https://www.nerdfonts.com/). In addition, it is recommended to use a
+monospace font, otherwise the symbols widths might be messed up. So, for
+instance, "Iosevka Nerd Font Mono" or "JetBrainsMono NF" are good options.
 
 
 ### `--dry-run`
