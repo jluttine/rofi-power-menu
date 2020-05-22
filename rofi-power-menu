@@ -153,7 +153,7 @@ done
 
 function write_message {
     icon="<span font_size=\"medium\">$1</span>"
-    text="<span font_size=\"medium\" allow_breaks=\"true\">$2</span>"
+    text="<span font_size=\"medium\">$2</span>"
     if [ "$showsymbols" = "true" ]
     then
         echo -n "\u200e$icon \u2068$text\u2069"
