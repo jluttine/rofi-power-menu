@@ -26,7 +26,7 @@ texts[suspend]="suspend"
 texts[hibernate]="hibernate"
 texts[reboot]="reboot"
 texts[shutdown]="shut down"
-texts[windows]="reboot to windows"
+texts[windows]="reboot to Windows"
 
 declare -A icons
 icons[lockscreen]="\uf023"
