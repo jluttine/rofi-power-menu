@@ -42,7 +42,7 @@ in `PATH`. If you have `~/.local/bin` in `PATH`, you can just copy the script
 there:
 
 ```
-cp rofi-power-menu ~/.local/bin/
+cp -r rofi-power-menu ~/.local/bin/
 ```
 
 
