@@ -197,7 +197,7 @@ to install
 ## Compatibility with distributions that do not use Systemctl
 
 If you are using a distro that doesn't use `systemctl`, you need to modify 
-the` rofi-power-menu` by replacing all references to this command with `loginctl`.
+the `rofi-power-menu` script by replacing all references to this command with `loginctl`.
 
 The lines that need to be edited are marked with a comment, so you can use them as a guide.
 
