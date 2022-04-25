@@ -9,8 +9,8 @@
 #
 # See README.md for more information.
 
-# If you are on Void Linux, replace "systemctl" with "loginctl", since "systemctl"
-# is not available in that distribution.
+# If you are on Void Linux, replace "systemctl" with "loginctl", otherwise the
+# script won't work.
 
 set -e
 set -u
