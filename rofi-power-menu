@@ -9,9 +9,6 @@
 #
 # See README.md for more information.
 
-# If you are on Void Linux, replace "systemctl" with "loginctl", otherwise the
-# script won't work.
-
 set -e
 set -u
 
@@ -44,10 +41,10 @@ declare -A actions
 actions[lockscreen]="loginctl lock-session ${XDG_SESSION_ID-}"
 #actions[switchuser]="???"
 actions[logout]="loginctl terminate-session ${XDG_SESSION_ID-}"
-actions[suspend]="systemctl suspend" # Replace "systemctl" with "loginctl" in Void Linux
-actions[hibernate]="systemctl hibernate" # Replace "systemctl" with "loginctl" in Void Linux
-actions[reboot]="systemctl reboot" # Replace "systemctl" with "loginctl" in Void Linux
-actions[shutdown]="systemctl poweroff" # Replace "systemctl" with "loginctl" in Void Linux
+actions[suspend]="systemctl suspend"
+actions[hibernate]="systemctl hibernate"
+actions[reboot]="systemctl reboot"
+actions[shutdown]="systemctl poweroff"
 
 # By default, ask for confirmation for actions that are irreversible
 confirmations=(reboot shutdown logout)
