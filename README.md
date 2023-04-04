@@ -95,6 +95,7 @@ Available options:
   --[no-]symbols     Show Unicode symbols or not. Requires a font with support
                      for the symbols. Use, for instance, fonts from the
                      Nerdfonts collection. By default, they are shown
+  --[no-]text        Show text description or not.
   -h,--help          Show this help text.
 ```
 

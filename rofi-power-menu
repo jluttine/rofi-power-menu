@@ -52,6 +52,7 @@ confirmations=(reboot shutdown logout)
 # By default, no dry run
 dryrun=false
 showsymbols=true
+showtext=true
 
 function check_valid {
     option="$1"
@@ -67,7 +68,7 @@ function check_valid {
 }
 
 # Parse command-line options
-parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols --name "$0" -- "$@")
+parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols,text,no-text --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -106,6 +107,7 @@ while true; do
             echo "  --[no-]symbols     Show Unicode symbols or not. Requires a font with support"
             echo "                     for the symbols. Use, for instance, fonts from the"
             echo "                     Nerdfonts collection. By default, they are shown"
+            echo "  --[no-]text        Show text description or not."
             echo "  -h,--help          Show this help text."
             exit 0
             ;;
@@ -137,6 +139,14 @@ while true; do
             showsymbols=false
             shift 1
             ;;
+        "--text")
+            showtext=true
+            shift 1
+            ;;
+        "--no-text")
+            showtext=false
+            shift 1
+            ;;
         "--")
             shift
             break
@@ -148,6 +158,12 @@ while true; do
     esac
 done
 
+if [ "$showsymbols" = "false" -a "$showtext" = "false" ]
+then
+    echo "Invalid options: cannot have --no-symbols and --no-text enabled at the same time." >&2
+    exit 1
+fi
+
 # Define the messages after parsing the CLI options so that it is possible to
 # configure them in the future.
 
@@ -156,7 +172,12 @@ function write_message {
     text="<span font_size=\"medium\">$2</span>"
     if [ "$showsymbols" = "true" ]
     then
-        echo -n "\u200e$icon \u2068$text\u2069"
+        if [ "$showtext" = "true" ]
+        then
+            echo -n "\u200e$icon \u2068$text\u2069"
+        else
+            echo -n "\u200e$icon"
+        fi
     else
         echo -n "$text"
     fi
