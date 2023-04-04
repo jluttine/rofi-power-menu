@@ -13,7 +13,7 @@ set -e
 set -u
 
 # All supported choices
-all=(shutdown reboot suspend hibernate logout lockscreen)
+all=(shutdown reboot suspend hibernate logout lockscreen windows)
 
 # By default, show all (i.e., just copy the array)
 show=("${all[@]}")
@@ -26,6 +26,7 @@ texts[suspend]="suspend"
 texts[hibernate]="hibernate"
 texts[reboot]="reboot"
 texts[shutdown]="shut down"
+texts[windows]="reboot to Windows"
 
 declare -A icons
 icons[lockscreen]="\uf023"
@@ -36,6 +37,7 @@ icons[hibernate]="\uf7c9"
 icons[reboot]="\ufc07"
 icons[shutdown]="\uf011"
 icons[cancel]="\u00d7"
+icons[windows]="\uf17a"
 
 declare -A actions
 actions[lockscreen]="loginctl lock-session ${XDG_SESSION_ID-}"
@@ -45,9 +47,10 @@ actions[suspend]="systemctl suspend"
 actions[hibernate]="systemctl hibernate"
 actions[reboot]="systemctl reboot"
 actions[shutdown]="systemctl poweroff"
+actions[windows]="systemctl reboot --boot-loader-entry=auto-windows --boot-loader-menu=0.5"
 
 # By default, ask for confirmation for actions that are irreversible
-confirmations=(reboot shutdown logout)
+confirmations=(reboot shutdown logout windows)
 
 # By default, no dry run
 dryrun=false
@@ -91,19 +94,19 @@ while true; do
             echo "  --dry-run          Don't perform the selected action but print it to stderr."
             echo "  --choices CHOICES  Show only the selected choices in the given order. Use / "
             echo "                     as the separator. Available choices are lockscreen, logout,"
-            echo "                     suspend, hibernate, reboot and shutdown. By default, all"
+            echo "                     suspend, hibernate, reboot, windows and shutdown. By default, all"
             echo "                     available choices are shown."
             echo "  --confirm CHOICES  Require confirmation for the gives choices only. Use / as"
             echo "                     the separator. Available choices are lockscreen, logout,"
             echo "                     suspend, hibernate, reboot and shutdown. By default, only"
-            echo "                     irreversible actions logout, reboot and shutdown require"
+            echo "                     irreversible actions logout, reboot, windows and shutdown require"
             echo "                     confirmation."
             echo "  --choose CHOICE    Preselect the given choice and only ask for a confirmation"
             echo "                     (if confirmation is set to be requested). It is strongly"
             echo "                     recommended to combine this option with --confirm=CHOICE"
             echo "                     if the choice wouldn't require confirmation by default."
             echo "                     Available choices are lockscreen, logout, suspend,"
-            echo "                     hibernate, reboot and shutdown."
+            echo "                     hibernate, reboot, windows and shutdown."
             echo "  --[no-]symbols     Show Unicode symbols or not. Requires a font with support"
             echo "                     for the symbols. Use, for instance, fonts from the"
             echo "                     Nerdfonts collection. By default, they are shown"
