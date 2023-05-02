@@ -28,14 +28,14 @@ texts[reboot]="reboot"
 texts[shutdown]="shut down"
 
 declare -A icons
-icons[lockscreen]="\uf023"
-icons[switchuser]="\uf518"
-icons[logout]="\uf842"
-icons[suspend]="\uf9b1"
-icons[hibernate]="\uf7c9"
-icons[reboot]="\ufc07"
-icons[shutdown]="\uf011"
-icons[cancel]="\u00d7"
+icons[lockscreen]=""
+icons[switchuser]="󰀙"
+icons[logout]="󰍃"
+icons[suspend]="󰒲"
+icons[hibernate]="󰋊"
+icons[reboot]="󰜉"
+icons[shutdown]=""
+icons[cancel]="󰅖"
 
 declare -A actions
 actions[lockscreen]="loginctl lock-session ${XDG_SESSION_ID-}"
