@@ -24,11 +24,15 @@ also a bit easier to use as you don't need to type the small amount of rofi
 Just to give an example, the screenshot below shows Rofi Power Menu launched as:
 
 ```
-rofi -show p -modi p:rofi-power-menu \
+rofi -show p -modi p:'rofi-power-menu --symbols-font "Symbols Nerd Font Mono"' \
   -theme Paper \
+  -font "JetBrains Mono NF 16"
+rofi \
+  -show p \
+  -modi p:'./rofi-power-menu --symbols-font "Symbols Nerd Font Mono"' \
   -font "JetBrains Mono NF 16" \
-  -width 20 \
-  -lines 6
+  -theme Paper \
+  -theme-str 'window {width: 8em;} listview {lines: 6;}'
 ```
 
 ![Screenshot of Rofi Power Menu](./screenshot.png)
@@ -76,27 +80,31 @@ Use with Rofi in script mode. For instance, to ask for shutdown or reboot:
   rofi -show menu -modi "menu:rofi-power-menu --choices=shutdown/reboot"
 
 Available options:
-  --dry-run          Don't perform the selected action but print it to stderr.
-  --choices CHOICES  Show only the selected choices in the given order. Use /
-                     as the separator. Available choices are lockscreen, logout,
-                     suspend, hibernate, reboot and shutdown. By default, all
-                     available choices are shown.
-  --confirm CHOICES  Require confirmation for the gives choices only. Use / as
-                     the separator. Available choices are lockscreen, logout,
-                     suspend, hibernate, reboot and shutdown. By default, only
-                     irreversible actions logout, reboot and shutdown require
-                     confirmation.
-  --choose CHOICE    Preselect the given choice and only ask for a confirmation
-                     (if confirmation is set to be requested). It is strongly
-                     recommended to combine this option with --confirm=CHOICE
-                     if the choice wouldn't require confirmation by default.
-                     Available choices are lockscreen, logout, suspend,
-                     hibernate, reboot and shutdown.
-  --[no-]symbols     Show Unicode symbols or not. Requires a font with support
-                     for the symbols. Use, for instance, fonts from the
-                     Nerdfonts collection. By default, they are shown
-  --[no-]text        Show text description or not.
-  -h,--help          Show this help text.
+  --dry-run            Don't perform the selected action but print it to stderr.
+  --choices CHOICES    Show only the selected choices in the given order. Use /
+                       as the separator. Available choices are lockscreen,
+                       logout,suspend, hibernate, reboot and shutdown. By
+                       default, all available choices are shown.
+  --confirm CHOICES    Require confirmation for the gives choices only. Use / as
+                       the separator. Available choices are lockscreen, logout,
+                       suspend, hibernate, reboot and shutdown. By default, only
+                       irreversible actions logout, reboot and shutdown require
+                       confirmation.
+  --choose CHOICE      Preselect the given choice and only ask for a
+                       confirmation (if confirmation is set to be requested). It
+                       is strongly recommended to combine this option with
+                       --confirm=CHOICE if the choice wouldn't require
+                       confirmation by default. Available choices are
+                       lockscreen, logout, suspend, hibernate, reboot and
+                       shutdown.
+  --[no-]symbols       Show Unicode symbols or not. Requires a font with support
+                       for the symbols. Use, for instance, fonts from the
+                       Nerdfonts collection. By default, they are shown
+  --[no-]text          Show text description or not.
+  --symbols-font FONT  Use the given font for symbols. By default, the symbols
+                       use the same font as the text. That font is configured
+                       with rofi.
+  -h,--help            Show this help text.
 ```
 
 
@@ -176,7 +184,8 @@ order for them to show up correctly, you need a font that supports the used
 glyphs. It is recommended to use fonts from the [Nerdfonts
 collection](https://www.nerdfonts.com/). In addition, it is recommended to use a
 monospace font, otherwise the symbols widths might be messed up. So, for
-instance, "Iosevka Nerd Font Mono" or "JetBrainsMono NF" are good options.
+instance, "Symbols Nerd Font Mono", "Iosevka Nerd Font Mono" or "JetBrainsMono
+NF" are good options.
 
 
 ### `--dry-run`

@@ -68,7 +68,7 @@ function check_valid {
 }
 
 # Parse command-line options
-parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols,text,no-text --name "$0" -- "$@")
+parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols,text,no-text,symbols-font: --name "$0" -- "$@")
 if [ $? -ne 0 ]; then
     echo 'Terminating...' >&2
     exit 1
@@ -88,27 +88,31 @@ while true; do
             echo "  rofi -show menu -modi \"menu:rofi-power-menu --choices=shutdown/reboot\""
             echo
             echo "Available options:"
-            echo "  --dry-run          Don't perform the selected action but print it to stderr."
-            echo "  --choices CHOICES  Show only the selected choices in the given order. Use / "
-            echo "                     as the separator. Available choices are lockscreen, logout,"
-            echo "                     suspend, hibernate, reboot and shutdown. By default, all"
-            echo "                     available choices are shown."
-            echo "  --confirm CHOICES  Require confirmation for the gives choices only. Use / as"
-            echo "                     the separator. Available choices are lockscreen, logout,"
-            echo "                     suspend, hibernate, reboot and shutdown. By default, only"
-            echo "                     irreversible actions logout, reboot and shutdown require"
-            echo "                     confirmation."
-            echo "  --choose CHOICE    Preselect the given choice and only ask for a confirmation"
-            echo "                     (if confirmation is set to be requested). It is strongly"
-            echo "                     recommended to combine this option with --confirm=CHOICE"
-            echo "                     if the choice wouldn't require confirmation by default."
-            echo "                     Available choices are lockscreen, logout, suspend,"
-            echo "                     hibernate, reboot and shutdown."
-            echo "  --[no-]symbols     Show Unicode symbols or not. Requires a font with support"
-            echo "                     for the symbols. Use, for instance, fonts from the"
-            echo "                     Nerdfonts collection. By default, they are shown"
-            echo "  --[no-]text        Show text description or not."
-            echo "  -h,--help          Show this help text."
+            echo "  --dry-run            Don't perform the selected action but print it to stderr."
+            echo "  --choices CHOICES    Show only the selected choices in the given order. Use /"
+            echo "                       as the separator. Available choices are lockscreen,"
+            echo "                       logout,suspend, hibernate, reboot and shutdown. By"
+            echo "                       default, all available choices are shown."
+            echo "  --confirm CHOICES    Require confirmation for the gives choices only. Use / as"
+            echo "                       the separator. Available choices are lockscreen, logout,"
+            echo "                       suspend, hibernate, reboot and shutdown. By default, only"
+            echo "                       irreversible actions logout, reboot and shutdown require"
+            echo "                       confirmation."
+            echo "  --choose CHOICE      Preselect the given choice and only ask for a"
+            echo "                       confirmation (if confirmation is set to be requested). It"
+            echo "                       is strongly recommended to combine this option with"
+            echo "                       --confirm=CHOICE if the choice wouldn't require"
+            echo "                       confirmation by default. Available choices are"
+            echo "                       lockscreen, logout, suspend, hibernate, reboot and"
+            echo "                       shutdown."
+            echo "  --[no-]symbols       Show Unicode symbols or not. Requires a font with support"
+            echo "                       for the symbols. Use, for instance, fonts from the"
+            echo "                       Nerdfonts collection. By default, they are shown"
+            echo "  --[no-]text          Show text description or not."
+            echo "  --symbols-font FONT  Use the given font for symbols. By default, the symbols"
+            echo "                       use the same font as the text. That font is configured"
+            echo "                       with rofi."
+            echo "  -h,--help            Show this help text."
             exit 0
             ;;
         "--dry-run")
@@ -147,6 +151,10 @@ while true; do
             showtext=false
             shift 1
             ;;
+        "--symbols-font")
+            symbols_font="$2"
+            shift 2
+            ;;
         "--")
             shift
             break
@@ -168,7 +176,12 @@ fi
 # configure them in the future.
 
 function write_message {
-    icon="<span font_size=\"medium\">$1</span>"
+    if [ -z ${symbols_font+x} ];
+    then
+        icon="<span font_size=\"medium\">$1</span>"
+    else
+        icon="<span font=\"${symbols_font}\" font_size=\"medium\">$1</span>"
+    fi
     text="<span font_size=\"medium\">$2</span>"
     if [ "$showsymbols" = "true" ]
     then
