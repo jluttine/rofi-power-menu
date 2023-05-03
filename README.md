@@ -24,12 +24,9 @@ also a bit easier to use as you don't need to type the small amount of rofi
 Just to give an example, the screenshot below shows Rofi Power Menu launched as:
 
 ```
-rofi -show p -modi p:'rofi-power-menu --symbols-font "Symbols Nerd Font Mono"' \
-  -theme Paper \
-  -font "JetBrains Mono NF 16"
 rofi \
   -show p \
-  -modi p:'./rofi-power-menu --symbols-font "Symbols Nerd Font Mono"' \
+  -modi p:'rofi-power-menu --symbols-font "Symbols Nerd Font Mono"' \
   -font "JetBrains Mono NF 16" \
   -theme Paper \
   -theme-str 'window {width: 8em;} listview {lines: 6;}'
