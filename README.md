@@ -201,6 +201,11 @@ pass arguments to dmenu/rofi so their configuration is hardcoded. Also, you need
 to install
 [rofi-script-to-dmenu](https://github.com/jluttine/rofi-script-to-dmenu).
 
+## Compatibility with distributions that do not use Systemctl
+
+If you are using a distro that doesn't use `systemctl`, you need to use
+the `rofi-power-menu-void` script instead of the regular one. It uses 
+`loginctl` as an alternative, which is proven to work.
 
 ## Copyright
 
