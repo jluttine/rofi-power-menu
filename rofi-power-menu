@@ -26,7 +26,7 @@ texts[suspend]="suspend"
 texts[hibernate]="hibernate"
 texts[reboot]="reboot"
 texts[shutdown]="shut down"
-texts[uefi]="reboot to uefi"
+texts[uefi]="reboot to UEFI"
 
 declare -A icons
 icons[lockscreen]="\Uf033e"
