@@ -13,7 +13,7 @@ set -e
 set -u
 
 # All supported choices
-all=(shutdown reboot suspend hibernate logout lockscreen)
+all=(shutdown reboot suspend hibernate logout lockscreen uefi)
 
 # By default, show all (i.e., just copy the array)
 show=("${all[@]}")
@@ -26,6 +26,7 @@ texts[suspend]="suspend"
 texts[hibernate]="hibernate"
 texts[reboot]="reboot"
 texts[shutdown]="shut down"
+texts[uefi]="reboot to UEFI"
 
 declare -A icons
 icons[lockscreen]="\Uf033e"
@@ -35,6 +36,7 @@ icons[suspend]="\Uf04b2"
 icons[hibernate]="\Uf02ca"
 icons[reboot]="\Uf0709"
 icons[shutdown]="\Uf0425"
+icons[uefi]="\Uf0709"
 icons[cancel]="\Uf0156"
 
 declare -A actions
@@ -45,9 +47,10 @@ actions[suspend]="systemctl suspend"
 actions[hibernate]="systemctl hibernate"
 actions[reboot]="systemctl reboot"
 actions[shutdown]="systemctl poweroff"
+actions[uefi]="systemctl reboot --firmware-setup"
 
 # By default, ask for confirmation for actions that are irreversible
-confirmations=(reboot shutdown logout)
+confirmations=(reboot shutdown logout uefi)
 
 # By default, no dry run
 dryrun=false
@@ -91,12 +94,12 @@ while true; do
             echo "  --dry-run            Don't perform the selected action but print it to stderr."
             echo "  --choices CHOICES    Show only the selected choices in the given order. Use /"
             echo "                       as the separator. Available choices are lockscreen,"
-            echo "                       logout,suspend, hibernate, reboot and shutdown. By"
+            echo "                       logout,suspend, hibernate, reboot, shutdown, and uefi. By"
             echo "                       default, all available choices are shown."
             echo "  --confirm CHOICES    Require confirmation for the gives choices only. Use / as"
             echo "                       the separator. Available choices are lockscreen, logout,"
             echo "                       suspend, hibernate, reboot and shutdown. By default, only"
-            echo "                       irreversible actions logout, reboot and shutdown require"
+            echo "                       irreversible actions logout, reboot, shutdown and uefi require"
             echo "                       confirmation."
             echo "  --choose CHOICE      Preselect the given choice and only ask for a"
             echo "                       confirmation (if confirmation is set to be requested). It"
